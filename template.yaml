@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  guia-tur-bra
+  Funcao que faz a raspagem dos dados da página das Cidades
+
+Globals:
+  Function:
+    Timeout: 10
+    CodeUri: scr
+    Runtime: python3.10
+    Architectures:
+      - x86_64
+    Layers:
+      - !Ref FetchLayer
+    Environment:
+      Variables:
+        REGION_NAME: "nome-da-regiao"
+
+Resources:
+  CidadesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: cidades.lambda_handler
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: "https://sqs.sua-regiao.amazonaws.com/123456789012/sua-fila"
+
+  FetchLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/python/
+      CompatibleRuntimes:
+        - python3.10
+    Metadata:
+      BuildMethod: python3.10

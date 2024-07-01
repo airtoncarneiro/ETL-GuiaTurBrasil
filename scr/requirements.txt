@@ -1,0 +1,4 @@
+requests-html
+lxml.html.clean
+boto3
+aws-lambda-powertools[parser]

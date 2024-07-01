@@ -1,0 +1,33 @@
+{
+	"folders": [
+		{
+			"name": "guia-tur-bra",
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.analysis.extraPaths": [
+			"${workspaceFolder}/layers/python"
+		]
+	},
+	"launch": {
+		"configurations": [
+			{
+				"type": "aws-sam",
+				"request": "direct-invoke",
+				"name": "Lambda:CidadesFunction",
+				"invokeTarget": {
+					"target": "template",
+					"templatePath": "${workspaceFolder}/template.yaml",
+					"logicalId": "CidadesFunction"
+				},
+				"lambda": {
+					"payload": {
+						"path": "${workspaceFolder}/events/cidades.json"
+					},
+					"environmentVariables": {}
+				}
+			}
+		]
+	}
+}
