@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: |
   guia-tur-bra
@@ -14,27 +14,40 @@ Resources:
   CidadesFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: CidadesFunction
       CodeUri: lambdas/cidades
       Handler: app.lambda_handler
       Runtime: python3.10
       Timeout: 20
       MemorySize: 128
-      # Layers:
-      #   - !Ref FetchLayer
+      Layers:
+        - !Ref FetchLayer
+        - !Ref MyLibsLayer
       Environment:
         Variables:
           SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
 
-  # FetchLayer:
-  #   Type: AWS::Serverless::LayerVersion
-  #   Properties:
-  #     LayerName: guia-tur-brasil-libs
-  #     ContentUri: layers/
-  #     CompatibleRuntimes:
-  #       - python3.10
-  #     RetentionPolicy: Delete
-  #   Metadata:
-  #     BuildMethod: python3.10
+  FetchLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: guia-tur-brasil-libs
+      ContentUri: layers/guia-libs
+      CompatibleRuntimes:
+        - python3.10
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: python3.10
+
+  MyLibsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: guia-tur-brasil-mylibs
+      ContentUri: layers/my_libs
+      CompatibleRuntimes:
+        - python3.10
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: python3.10
 
   CidadesQueue:
     Type: AWS::SQS::Queue

@@ -6,7 +6,7 @@ version = 0.1
 stack_name = "guia-tur-bra"
 
 [default.build.parameters]
-cached = true
+cached = false
 parallel = true
 
 [default.validate.parameters]
@@ -22,7 +22,7 @@ s3_bucket="sam-app-guiaturbra-1972"
 region = "us-east-1"
 
 [default.package.parameters]
-resolve_s3 = true
+#resolve_s3 = true
 
 [default.sync.parameters]
 watch = true
