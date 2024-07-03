@@ -16,9 +16,10 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 s3_prefix = "guia-tur-bra"
-#region = "us-east-1"
 image_repositories = []
-resolve_s3 = true
+s3_bucket="sam-app-guiaturbra-1972"
+#resolve_s3 = true
+region = "us-east-1"
 
 [default.package.parameters]
 resolve_s3 = true
