@@ -26,6 +26,11 @@ Resources:
       Environment:
         Variables:
           SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action: sqs:SendMessage
+            Resource: !GetAtt CidadesQueue.Arn
 
   FetchLayer:
     Type: AWS::Serverless::LayerVersion

@@ -20,6 +20,7 @@ image_repositories = []
 s3_bucket="sam-app-guiaturbra-1972"
 #resolve_s3 = true
 region = "us-east-1"
+resolve_s3 = true
 
 [default.package.parameters]
 #resolve_s3 = true
