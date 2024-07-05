@@ -5,11 +5,11 @@
 			"path": "."
 		}
 	],
-	"settings": {
-		"python.analysis.extraPaths": [
-			"${workspaceFolder}/layers/my_libs"
-		]
-	},
+	// "settings": {
+	// 	"python.analysis.extraPaths": [
+	// 		"${workspaceFolder}/layers/my_libs"
+	// 	]
+	// },
 	"launch": {
 		"configurations": [
 			{

@@ -5,7 +5,9 @@
         "dockerfile": "../Dockerfile"
     },
     "mounts": [
-        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/root/.aws,type=bind"
+        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
+        "source=${env:HOME}${env:USERPROFILE}/.git,target=/home/vscode/.git,type=bind",
+        "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind"
     ],
     "customizations": {
         "vscode": {
@@ -14,9 +16,13 @@
                 "amazonwebservices.aws-toolkit-vscode",
                 "ms-python.python",
                 "ms-python.vscode-pylance"
-            ]
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "python.analysis.extraPaths": [
+                    "${workspaceFolder}/layers/my_libs"
+                ]
+            }
         }
     }
-    // "postCreateCommand": "exit 0",
-    // "postCreateCommand": "echo Workspace Folder: ${workspaceFolder} && env"
 }
