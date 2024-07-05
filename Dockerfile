@@ -33,15 +33,16 @@ COPY layers/guia-libs/requirements.txt /tmp/requirements.txt
 RUN pip install --upgrade pip && pip install -r /tmp/requirements.txt
 
 # Create a non-root user with the same UID and GID as the local user
-ARG USER=vscode
-ARG HOME_USER=/home/$USER
+ARG USERNAME=vscode
+ARG HOME_USER=/home/$USERNAME
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-RUN groupadd -g $GROUP_ID $USER \
-    && useradd -u $USER_ID -g $GROUP_ID -m $USER \
-    && chown -R $USER:$USER $HOME_USER
 
-USER $USER
+RUN groupadd -g $GROUP_ID $USERNAME \
+    && useradd -u $USER_ID -g $GROUP_ID -m $USERNAME \
+    && chown -R $USERNAME:$USERNAME $HOME_USER
+
+USER $USERNAME
 WORKDIR $HOME_USER
 
 # Set default shell to bash

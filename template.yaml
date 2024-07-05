@@ -32,6 +32,25 @@ Resources:
             Action: sqs:SendMessage
             Resource: !GetAtt CidadesQueue.Arn
 
+  CidadeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: CidadeFunction
+      CodeUri: lambdas/cidade
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      Timeout: 20
+      MemorySize: 128
+      Layers:
+        - !Ref FetchLayer
+        - !Ref MyLibsLayer
+      Events:
+        CidadesQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt CidadesQueue.Arn
+            BatchSize: 1
+
   FetchLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:

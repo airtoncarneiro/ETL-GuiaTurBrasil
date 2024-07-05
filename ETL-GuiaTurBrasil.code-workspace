@@ -5,11 +5,6 @@
 			"path": "."
 		}
 	],
-	// "settings": {
-	// 	"python.analysis.extraPaths": [
-	// 		"${workspaceFolder}/layers/my_libs"
-	// 	]
-	// },
 	"launch": {
 		"configurations": [
 			{
@@ -27,7 +22,24 @@
 					},
 					"environmentVariables": {}
 				}
-			}
+			},
+			{
+				"type": "aws-sam",
+				"request": "direct-invoke",
+				"name": "Lambda:CidadeFunction",
+				"invokeTarget": {
+					"target": "template",
+					"templatePath": "${workspaceFolder}/template.yaml",
+					"logicalId": "CidadeFunction"
+				},
+				"lambda": {
+					"runtime": "python3.10",
+					"payload": {
+						"path": "${workspaceFolder}/events/cidade.json"
+					},
+					"environmentVariables": {}
+				}
+			},
 		]
 	}
 }

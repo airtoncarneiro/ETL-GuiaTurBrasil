@@ -5,10 +5,14 @@
         "dockerfile": "../Dockerfile"
     },
     "mounts": [
-        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
-        "source=${env:HOME}${env:USERPROFILE}/.git,target=/home/vscode/.git,type=bind",
-        "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind"
+        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/${localEnv:USER}/.aws,type=bind",
+        "source=${env:HOME}${env:USERPROFILE}/.git,target=/home/${localEnv:USER}/.git,type=bind",
+        "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind",
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
     ],
+    "features": {
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    },
     "customizations": {
         "vscode": {
             "extensions": [
@@ -18,11 +22,13 @@
                 "ms-python.vscode-pylance"
             ],
             "settings": {
-                "terminal.integrated.shell.linux": "/bin/bash",
                 "python.analysis.extraPaths": [
                     "${workspaceFolder}/layers/my_libs"
                 ]
             }
         }
+    },
+    "containerEnv": {
+        "SHELL": "/bin/bash"
     }
 }
