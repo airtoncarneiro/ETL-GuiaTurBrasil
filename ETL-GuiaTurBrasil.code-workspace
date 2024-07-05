@@ -7,26 +7,11 @@
 	],
 	"settings": {
 		"python.analysis.extraPaths": [
-			"${workspaceFolder}/layers/python"
+			"${workspaceFolder}/layers/my_libs"
 		]
 	},
 	"launch": {
 		"configurations": [
-			{
-				"type": "aws-sam",
-				"request": "direct-invoke",
-				"name": "teste:lambda_function.lambda_handler (python3.10)",
-				"invokeTarget": {
-					"target": "code",
-					"projectRoot": "${workspaceFolder}/teste",
-					"lambdaHandler": "lambda_function.lambda_handler"
-				},
-				"lambda": {
-					"runtime": "python3.10",
-					"payload": {},
-					"environmentVariables": {}
-				}
-			},
 			{
 				"type": "aws-sam",
 				"request": "direct-invoke",

@@ -16,6 +16,7 @@
                 "ms-python.vscode-pylance"
             ]
         }
-    },
-    "postCreateCommand": "exit 0"
+    }
+    // "postCreateCommand": "exit 0",
+    // "postCreateCommand": "echo Workspace Folder: ${workspaceFolder} && env"
 }

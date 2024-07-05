@@ -23,7 +23,7 @@ class Cidade(BaseModel):
     href: str
 
 
-def fetch_cidades() -> TYPE_CIDADES_LIST:
+def get_page_cidades() -> TYPE_CIDADES_LIST:
     url = "https://www.guiadoturismobrasil.com/cidades"
     response = fetch_data_from_url(url=url)
 
@@ -80,7 +80,7 @@ def lambda_handler(
     event: dict, context: LambdaContext
 ) -> TYPE_LAMBDA_RESPONSE_OR_ERROR_RESPONSE:
     try:
-        cidades_list = fetch_cidades()
+        cidades_list = get_page_cidades()
         return send_to_sqs(cidades_list=cidades_list)
     except Exception as e:
         return handle_error(e)
