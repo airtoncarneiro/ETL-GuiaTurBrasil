@@ -1,0 +1,21 @@
+{
+    "name": "AWS-ETL-GuiaTurBrasil",
+    "build": {
+        "context": "..",
+        "dockerfile": "../Dockerfile"
+    },
+    "mounts": [
+        "source=${env:HOME}${env:USERPROFILE}/.aws,target=/root/.aws,type=bind"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "amazonwebservices.amazon-q-vscode",
+                "amazonwebservices.aws-toolkit-vscode",
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    },
+    "postCreateCommand": "exit 0"
+}
