@@ -1,0 +1,54 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "ETL-GuiaTurBrasil:CidadesFunction (python3.10)",
+            "invokeTarget": {
+                "target": "template",
+                "templatePath": "${workspaceFolder}/template.yaml",
+                "logicalId": "CidadesFunction"
+            },
+            "lambda": {
+                "payload": {
+                    "path": "${workspaceFolder}/events/cidades.json"
+                },
+                "environmentVariables": {
+                    "AWS_REGION": "us-east-1",
+                    "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/654654476110/CidadesQueue",
+                }
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "ETL-GuiaTurBrasil:CidadeFunction (python3.10)",
+            "invokeTarget": {
+                "target": "template",
+                "templatePath": "${workspaceFolder}/template.yaml",
+                "logicalId": "CidadeFunction"
+            },
+            "lambda": {
+                "payload": {
+                    "path": "${workspaceFolder}/events/cidade.json"
+                },
+                "environmentVariables": {
+                    "AWS_REGION": "us-east-1",
+                    "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/654654476110/CidadesQueue",
+                }
+            }
+        },
+        {
+            "name": "Python: Debug (Python 3.10)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "AWS_REGION": "us-east-1",
+                "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/654654476110/CidadesQueue",
+            }
+        }
+    ]
+}

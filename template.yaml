@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
   guia-tur-bra
@@ -15,14 +15,11 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: CidadesFunction
-      CodeUri: lambdas/cidades
-      Handler: app.lambda_handler
+      CodeUri: src
+      Handler: cidades.lambda_handler
       Runtime: python3.10
       Timeout: 20
       MemorySize: 128
-      Layers:
-        - !Ref FetchLayer
-        - !Ref MyLibsLayer
       Environment:
         Variables:
           SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
@@ -31,47 +28,28 @@ Resources:
             Effect: Allow
             Action: sqs:SendMessage
             Resource: !GetAtt CidadesQueue.Arn
+    Metadata:
+      BuildMethod: python3.10
+      BuildArchitecture: x86_64
 
   CidadeFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: CidadeFunction
-      CodeUri: lambdas/cidade
-      Handler: app.lambda_handler
+      CodeUri: src
+      Handler: cidade.lambda_handler
       Runtime: python3.10
       Timeout: 20
       MemorySize: 128
-      Layers:
-        - !Ref FetchLayer
-        - !Ref MyLibsLayer
       Events:
         CidadesQueue:
           Type: SQS
           Properties:
             Queue: !GetAtt CidadesQueue.Arn
             BatchSize: 1
-
-  FetchLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: guia-tur-brasil-libs
-      ContentUri: layers/guia-libs
-      CompatibleRuntimes:
-        - python3.10
-      RetentionPolicy: Retain
     Metadata:
       BuildMethod: python3.10
-
-  MyLibsLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: guia-tur-brasil-mylibs
-      ContentUri: layers/my_libs
-      CompatibleRuntimes:
-        - python3.10
-      RetentionPolicy: Retain
-    Metadata:
-      BuildMethod: python3.10
+      BuildArchitecture: x86_64
 
   CidadesQueue:
     Type: AWS::SQS::Queue
