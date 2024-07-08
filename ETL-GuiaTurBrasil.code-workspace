@@ -5,41 +5,4 @@
 			"path": "."
 		}
 	],
-	"launch": {
-		"configurations": [
-			{
-				"type": "aws-sam",
-				"request": "direct-invoke",
-				"name": "Lambda:CidadesFunction",
-				"invokeTarget": {
-					"target": "template",
-					"templatePath": "${workspaceFolder}/template.yaml",
-					"logicalId": "CidadesFunction"
-				},
-				"lambda": {
-					"payload": {
-						"path": "${workspaceFolder}/events/cidades.json"
-					},
-					"environmentVariables": {}
-				}
-			},
-			{
-				"type": "aws-sam",
-				"request": "direct-invoke",
-				"name": "Lambda:CidadeFunction",
-				"invokeTarget": {
-					"target": "template",
-					"templatePath": "${workspaceFolder}/template.yaml",
-					"logicalId": "CidadeFunction"
-				},
-				"lambda": {
-					"runtime": "python3.10",
-					"payload": {
-						"path": "${workspaceFolder}/events/cidade.json"
-					},
-					"environmentVariables": {}
-				}
-			},
-		]
-	}
 }
