@@ -5,4 +5,10 @@
 			"path": "."
 		}
 	],
+	"settings": {
+		"python.analysis.extraPaths": [
+			"${workspaceFolder}/layer",
+			"${workspaceFolder}/.aws-sam/build/LibsLayer"
+		]
+	},
 }

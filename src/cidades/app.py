@@ -22,11 +22,6 @@ def get_page_cidades():
 
     for cidade in cidades_link:
         href = cidade.get("href")
-        # _title = cidade.get("title")
-        # if _title:
-        #     _nome, _uf = _title.split("/")
-
-        #     cidades_list.append({"uf": _uf, "nome": _nome, "href": _href})
 
         *_, uf, id, cidade = href.split("/")
         cidades_list.append({"uf": uf, "nome": cidade, "id": id, "href": href})

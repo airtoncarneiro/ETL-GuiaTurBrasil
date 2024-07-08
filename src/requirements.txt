@@ -1,4 +1,0 @@
-requests
-pydantic
-lxml
-boto3

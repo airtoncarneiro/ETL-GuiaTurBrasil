@@ -2,24 +2,44 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
   guia-tur-bra
-  Funcao que faz a raspagem dos dados da pagina das cidades
+  Função que faz a raspagem dos dados da página das cidades
 
 Globals:
   Function:
+    Runtime: python3.10
+    Handler: app.lambda_handler
+    Timeout: 20
+    Layers:
+      - !Ref LibsLayer
     Environment:
       Variables:
         REGION_NAME: us-east-1
+        SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
 
 Resources:
+  LibsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: LibsLayer
+      Description: Layer comum para as funções Lambda
+      ContentUri: layer
+      CompatibleRuntimes:
+        - python3.10
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: python3.10
+
   CidadesFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: CidadesFunction
-      CodeUri: src
-      Handler: cidades.lambda_handler
+      CodeUri: src/cidades
+      Handler: app.lambda_handler
       Runtime: python3.10
       Timeout: 20
       MemorySize: 128
+      Layers:
+        - !Ref LibsLayer
       Environment:
         Variables:
           SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
@@ -36,11 +56,13 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: CidadeFunction
-      CodeUri: src
-      Handler: cidade.lambda_handler
+      CodeUri: src/cidade
+      Handler: app.lambda_handler
       Runtime: python3.10
       Timeout: 20
       MemorySize: 128
+      Layers:
+        - !Ref LibsLayer
       Events:
         CidadesQueue:
           Type: SQS
