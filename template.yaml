@@ -9,12 +9,14 @@ Globals:
     Runtime: python3.10
     Handler: app.lambda_handler
     Timeout: 20
-    Layers:
-      - !Ref LibsLayer
+    MemorySize: 128
     Environment:
       Variables:
         REGION_NAME: us-east-1
         SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
+    Layers:
+      - !Ref LibsLayer
+      - !Ref CustomLayer
 
 Resources:
   LibsLayer:
@@ -22,7 +24,19 @@ Resources:
     Properties:
       LayerName: LibsLayer
       Description: Layer comum para as funções Lambda
-      ContentUri: layer
+      ContentUri: layer/libs
+      CompatibleRuntimes:
+        - python3.10
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: makefile
+
+  CustomLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: LibsLayer
+      Description: Layer comum para as funções Lambda
+      ContentUri: layer/custom
       CompatibleRuntimes:
         - python3.10
       RetentionPolicy: Retain
@@ -33,45 +47,27 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: CidadesFunction
-      CodeUri: src/cidades
-      Handler: app.lambda_handler
-      Runtime: python3.10
-      Timeout: 20
-      MemorySize: 128
+      CodeUri: lambda/cidades
       Layers:
         - !Ref LibsLayer
-      Environment:
-        Variables:
-          SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
+        - !Ref CustomLayer
       Policies:
         - Statement:
             Effect: Allow
             Action: sqs:SendMessage
             Resource: !GetAtt CidadesQueue.Arn
-    Metadata:
-      BuildMethod: python3.10
-      BuildArchitecture: x86_64
 
   CidadeFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: CidadeFunction
-      CodeUri: src/cidade
-      Handler: app.lambda_handler
-      Runtime: python3.10
-      Timeout: 20
-      MemorySize: 128
-      Layers:
-        - !Ref LibsLayer
+      CodeUri: lambda/cidade
       Events:
         CidadesQueue:
           Type: SQS
           Properties:
             Queue: !GetAtt CidadesQueue.Arn
             BatchSize: 1
-    Metadata:
-      BuildMethod: python3.10
-      BuildArchitecture: x86_64
 
   CidadesQueue:
     Type: AWS::SQS::Queue

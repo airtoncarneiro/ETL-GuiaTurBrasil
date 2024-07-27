@@ -6,7 +6,7 @@ version = 0.1
 stack_name = "guia-tur-bra"
 
 [default.build.parameters]
-cached = true
+cached = false
 parallel = false
 
 [default.validate.parameters]

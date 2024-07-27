@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./layer",
+        "./layer/custom"
+    ]
+}

@@ -1,14 +1,48 @@
 {
 	"folders": [
 		{
-			"name": "guia-tur-bra",
 			"path": "."
 		}
 	],
-	"settings": {
-		"python.analysis.extraPaths": [
-			"${workspaceFolder}/layer",
-			"${workspaceFolder}/.aws-sam/build/LibsLayer"
+	"settings": {},
+	"launch": {
+		"configurations": [
+			{
+				"type": "aws-sam",
+				"request": "direct-invoke",
+				"name": "ETL-GuiaTurBrasil:CidadesFunction",
+				"invokeTarget": {
+					"target": "template",
+					"templatePath": "${workspaceFolder}/template.yaml",
+					"logicalId": "CidadesFunction"
+				},
+				"lambda": {
+					"payload": {},
+					"environmentVariables": {}
+				}
+			},
+			{
+				"type": "aws-sam",
+				"request": "direct-invoke",
+				"name": "common:data-bucket-transform:lambda.handler (python3.9)",
+				"invokeTarget": {
+					"target": "code",
+					"projectRoot": "${workspaceFolder}/lambda/cidades",
+					"lambdaHandler": "app.lambda_handler"
+				},
+				"lambda": {
+					"runtime": "python3.10",
+					"payload": {
+						"path": "${workspaceFolder}/events/cidades.json"
+					},
+					"environmentVariables": {
+						"LOG_LEVEL": "DEBUG",
+						"ECOSYSTEM": "dev",
+						"ENVIRONMENT": "dev",
+						"SERVICE": "common"
+					}
+				}
+			}
 		]
-	},
+	}
 }
