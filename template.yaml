@@ -10,13 +10,13 @@ Globals:
     Handler: app.lambda_handler
     Timeout: 20
     MemorySize: 128
+    Layers:
+      - !Ref LibsLayer
+      - !Ref CustomLayer
     Environment:
       Variables:
         REGION_NAME: us-east-1
         SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
-    Layers:
-      - !Ref LibsLayer
-      - !Ref CustomLayer
 
 Resources:
   LibsLayer:
@@ -29,12 +29,12 @@ Resources:
         - python3.10
       RetentionPolicy: Delete
     Metadata:
-      BuildMethod: makefile
+      BuildMethod: python3.10
 
   CustomLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: LibsLayer
+      LayerName: CustomLayer
       Description: Layer comum para as funções Lambda
       ContentUri: layer/custom
       CompatibleRuntimes:
@@ -48,9 +48,6 @@ Resources:
     Properties:
       FunctionName: CidadesFunction
       CodeUri: lambda/cidades
-      Layers:
-        - !Ref LibsLayer
-        - !Ref CustomLayer
       Policies:
         - Statement:
             Effect: Allow
@@ -68,7 +65,6 @@ Resources:
           Properties:
             Queue: !GetAtt CidadesQueue.Arn
             BatchSize: 1
-
   CidadesQueue:
     Type: AWS::SQS::Queue
     Properties:

@@ -20,28 +20,6 @@
 					"payload": {},
 					"environmentVariables": {}
 				}
-			},
-			{
-				"type": "aws-sam",
-				"request": "direct-invoke",
-				"name": "common:data-bucket-transform:lambda.handler (python3.9)",
-				"invokeTarget": {
-					"target": "code",
-					"projectRoot": "${workspaceFolder}/lambda/cidades",
-					"lambdaHandler": "app.lambda_handler"
-				},
-				"lambda": {
-					"runtime": "python3.10",
-					"payload": {
-						"path": "${workspaceFolder}/events/cidades.json"
-					},
-					"environmentVariables": {
-						"LOG_LEVEL": "DEBUG",
-						"ECOSYSTEM": "dev",
-						"ENVIRONMENT": "dev",
-						"SERVICE": "common"
-					}
-				}
 			}
 		]
 	}

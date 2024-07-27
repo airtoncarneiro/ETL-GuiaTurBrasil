@@ -1,3 +1,10 @@
+"""
+Este módulo fornece funcionalidades para buscar dados de cidades do site Guia do Turismo Brasil,
+enviar esses dados para uma fila SQS da AWS e lidar com erros de execução. Ele inclui funções
+para buscar dados da web, processar os dados e enviá-los para a fila SQS, além de um handler para
+execução em um ambiente Lambda da AWS.
+"""
+
 import os
 import json
 from datetime import datetime
@@ -7,15 +14,40 @@ from lxml import html
 from my_sqs import SQSClient
 
 
-def fetch_data_from_url(url):
-    response = requests.get(url)
+def fetch_data_from_url(url, timeout=10):
+    """
+    Busca dados de uma URL e retorna o conteúdo HTML como um documento lxml.
+
+    Args:
+        url (str): A URL de onde buscar os dados.
+        timeout (int): O tempo máximo em segundos para esperar por uma resposta. Padrão é 10.
+
+    Returns:
+        lxml.html.HtmlElement: O documento HTML parseado.
+
+    Raises:
+        requests.exceptions.RequestException: Se ocorrer um erro ao fazer a solicitação.
+    """
+    response = requests.get(url, timeout=timeout)
     response.raise_for_status()
     return html.fromstring(response.content)
 
 
 def get_page_cidades():
-    URL = "https://www.guiadoturismobrasil.com/cidades"
-    document = fetch_data_from_url(url=URL)
+    """
+    Busca e processa dados de cidades do site Guia do Turismo Brasil.
+
+    Returns:
+        list: Uma lista de dicionários contendo informações das cidades.
+
+    Exemplo de retorno:
+        [
+            {"uf": "SP", "nome": "sao-paulo", "href": "/cidades/sp/sao-paulo"},
+            ...
+        ]
+    """
+    url = "https://www.guiadoturismobrasil.com/cidades"
+    document = fetch_data_from_url(url=url)
 
     cidades_link = document.xpath("//a[contains(@class, 'link-cidades')]")
     cidades_list = []
@@ -35,6 +67,18 @@ def get_page_cidades():
 
 
 def send_to_sqs(cidades_list):
+    """
+    Envia uma lista de cidades para uma fila SQS da AWS.
+
+    Args:
+        cidades_list (list): A lista de dicionários contendo informações das cidades.
+
+    Returns:
+        dict: Um dicionário com o código de status e uma mensagem de sucesso.
+
+    Raises:
+        ValueError: Se as variáveis de ambiente AWS_REGION ou SQS_QUEUE_URL não estiverem definidas.
+    """
     region_name = os.getenv(key="AWS_REGION", default="")
     queue_url = os.getenv(key="SQS_QUEUE_URL", default="")
 
@@ -52,20 +96,49 @@ def send_to_sqs(cidades_list):
     return {"statusCode": 200, "body": "Hello from Lambda!"}
 
 
-def handle_error(e):
-    print(f"Error: {e}")
+def handle_error(error):
+    """
+    Lida com erros, registrando a mensagem de erro e retornando uma resposta adequada.
+
+    Args:
+        error (Exception): A exceção que ocorreu.
+
+    Returns:
+        dict: Um dicionário com o código de status e uma mensagem de erro.
+    """
+    print(f"Error: {error}")
     return {
         "statusCode": 500,
-        "body": json.dumps({"message": "Error occurred", "error": str(e)}),
+        "body": json.dumps({"message": "Error occurred", "error": str(error)}),
     }
 
 
 def lambda_handler(event, context):
+    """
+    Handler principal para execução em um ambiente Lambda da AWS.
+
+    Args:
+        event (dict): O evento que aciona o Lambda.
+        context (object): O contexto de execução do Lambda.
+
+    Returns:
+        dict: A resposta resultante da execução das funções de busca e envio de dados.
+    """
     try:
         cidades_list = get_page_cidades()
         return send_to_sqs(cidades_list=cidades_list)
-    except Exception as e:
-        return handle_error(e)
+    except requests.exceptions.HTTPError as http_err:
+        return handle_error(f"HTTP error occurred: {http_err}")
+    except requests.exceptions.ConnectionError as conn_err:
+        return handle_error(f"Connection error occurred: {conn_err}")
+    except requests.exceptions.Timeout as timeout_err:
+        return handle_error(f"Timeout error occurred: {timeout_err}")
+    except requests.exceptions.RequestException as req_err:
+        return handle_error(f"An error occurred with the request: {req_err}")
+    except ValueError as val_err:
+        return handle_error(f"Value error occurred: {val_err}")
+    except Exception as error:
+        return handle_error(f"An unexpected error occurred: {error}")
 
 
 if __name__ == "__main__":
