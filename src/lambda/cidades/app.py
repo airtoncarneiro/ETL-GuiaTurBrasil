@@ -11,8 +11,10 @@ import logging
 from datetime import datetime
 
 import requests
+
 from lxml import html
 from my_sqs import SQSClient
+from my_fetch import fetch_data_from_url
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,7 +38,7 @@ def fetch_data_from_url(url, timeout=10):
     return html.fromstring(response.content)
 
 
-def get_page_cidades():
+def extract_cidades_from_page():
     """
     Busca e processa dados de cidades do site Guia do Turismo Brasil.
 
@@ -131,7 +133,7 @@ def lambda_handler(event, context):
     logging.info("Context: %s", context)
 
     try:
-        cidades_list = get_page_cidades()
+        cidades_list = extract_cidades_from_page()
         return send_to_sqs(cidades_list=cidades_list)
     except requests.exceptions.HTTPError as http_err:
         return handle_error(f"HTTP error occurred: {http_err}")

@@ -12,7 +12,7 @@ Globals:
     MemorySize: 128
     Layers:
       - !Ref LibsLayer
-      # - !Ref CustomLayer
+      - !Ref CustomLayer
     Environment:
       Variables:
         REGION_NAME: us-east-1
@@ -31,17 +31,17 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
-  # CustomLayer:
-  #   Type: AWS::Serverless::LayerVersion
-  #   Properties:
-  #     LayerName: !Sub ${AWS::StackName}-CustomLayer
-  #     Description: Layer comum para as funções Lambda
-  #     ContentUri: src/layer/custom
-  #     CompatibleRuntimes:
-  #       - python3.10
-  #     RetentionPolicy: Retain
-  #   Metadata:
-  #     BuildMethod: python3.10
+  CustomLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub ${AWS::StackName}-CustomLayer
+      Description: Layer comum para as funções Lambda
+      ContentUri: src/layer/custom
+      CompatibleRuntimes:
+        - python3.10
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: python3.10
 
   CidadesFunction:
     Type: AWS::Serverless::Function
@@ -56,24 +56,24 @@ Resources:
       Layers:
         - !Ref LibsLayer
 
-  # CidadeFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     FunctionName: !Sub ${AWS::StackName}-CidadeFunction
-  #     CodeUri: src/lambda/cidade
-  #     Events:
-  #       CidadesQueue:
-  #         Type: SQS
-  #         Properties:
-  #           Queue: !GetAtt CidadesQueue.Arn
-  #           BatchSize: 1
-#   CidadesQueue:
-#     Type: AWS::SQS::Queue
-#     Properties:
-#       QueueName: CidadesQueue
+  CidadeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-CidadeFunction
+      CodeUri: src/lambda/cidade
+      Events:
+        CidadesQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt CidadesQueue.Arn
+            BatchSize: 1
+  CidadesQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: CidadesQueue
 
-# Outputs:
-#   CidadesQueueUrl:
-#     Value: !Ref CidadesQueue
-#     Export:
-#       Name: CidadesQueueUrl
+Outputs:
+  CidadesQueueUrl:
+    Value: !Ref CidadesQueue
+    Export:
+      Name: CidadesQueueUrl
