@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "prelaunch-task",
+            "type": "shell",
+            "command": "sam build --use-container",
+            "problemMatcher": []
+        }
+    ]
+}

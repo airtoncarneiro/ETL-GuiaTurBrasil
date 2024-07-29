@@ -1,0 +1,55 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "ETL-GuiaTurBrasil:CidadesFunction",
+            "invokeTarget": {
+                "target": "template",
+                "templatePath": "${workspaceFolder}/template.yaml",
+                "logicalId": "CidadesFunction"
+            },
+            "lambda": {
+                "payload": {},
+                "environmentVariables": {}
+            },
+            "sam": {
+                "containerBuild": true,
+                "buildDir": "${workspaceFolder}/.aws-sam",
+                "buildArguments": [
+                    "--cached",
+                    "--debug",
+                ],
+                // "localArguments": [
+                //     "--env-vars",
+                //     "${workspaceFolder}/project/EnvironmentVariables/env.json"
+                // ]
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "cidades:app.lambda_handler (python3.10)",
+            // "preLaunchTask": "prelaunch-task",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/src/lambda/cidades",
+                "lambdaHandler": "app.lambda_handler"
+            },
+            "lambda": {
+                "runtime": "python3.10",
+                "payload": {},
+                "environmentVariables": {}
+            },
+            "sam": {
+                "buildArguments": [
+                    "--manifest",
+                    "${workspaceFolder}/src/layer/libs/requirements.txt"
+                ],
+                "containerBuild": true,
+                "localArguments": []
+            }
+        }
+    ]
+}

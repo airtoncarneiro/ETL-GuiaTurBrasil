@@ -12,7 +12,7 @@ Globals:
     MemorySize: 128
     Layers:
       - !Ref LibsLayer
-      - !Ref CustomLayer
+      # - !Ref CustomLayer
     Environment:
       Variables:
         REGION_NAME: us-east-1
@@ -22,56 +22,58 @@ Resources:
   LibsLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: LibsLayer
+      LayerName: !Sub ${AWS::StackName}-LibsLayer
       Description: Layer comum para as funções Lambda
-      ContentUri: layer/libs
-      CompatibleRuntimes:
-        - python3.10
-      RetentionPolicy: Delete
-    Metadata:
-      BuildMethod: python3.10
-
-  CustomLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: CustomLayer
-      Description: Layer comum para as funções Lambda
-      ContentUri: layer/custom
+      ContentUri: src/layer/libs
       CompatibleRuntimes:
         - python3.10
       RetentionPolicy: Retain
     Metadata:
-      BuildMethod: python3.10
+      BuildMethod: makefile
+
+  # CustomLayer:
+  #   Type: AWS::Serverless::LayerVersion
+  #   Properties:
+  #     LayerName: !Sub ${AWS::StackName}-CustomLayer
+  #     Description: Layer comum para as funções Lambda
+  #     ContentUri: src/layer/custom
+  #     CompatibleRuntimes:
+  #       - python3.10
+  #     RetentionPolicy: Retain
+  #   Metadata:
+  #     BuildMethod: python3.10
 
   CidadesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: CidadesFunction
-      CodeUri: lambda/cidades
+      FunctionName: !Sub ${AWS::StackName}-CidadesFunction
+      CodeUri: src/lambda/cidades
       Policies:
         - Statement:
             Effect: Allow
             Action: sqs:SendMessage
             Resource: !GetAtt CidadesQueue.Arn
+      Layers:
+        - !Ref LibsLayer
 
-  CidadeFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: CidadeFunction
-      CodeUri: lambda/cidade
-      Events:
-        CidadesQueue:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt CidadesQueue.Arn
-            BatchSize: 1
-  CidadesQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: CidadesQueue
+  # CidadeFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: !Sub ${AWS::StackName}-CidadeFunction
+  #     CodeUri: src/lambda/cidade
+  #     Events:
+  #       CidadesQueue:
+  #         Type: SQS
+  #         Properties:
+  #           Queue: !GetAtt CidadesQueue.Arn
+  #           BatchSize: 1
+#   CidadesQueue:
+#     Type: AWS::SQS::Queue
+#     Properties:
+#       QueueName: CidadesQueue
 
-Outputs:
-  CidadesQueueUrl:
-    Value: !Ref CidadesQueue
-    Export:
-      Name: CidadesQueueUrl
+# Outputs:
+#   CidadesQueueUrl:
+#     Value: !Ref CidadesQueue
+#     Export:
+#       Name: CidadesQueueUrl

@@ -1,6 +1,7 @@
 {
     "python.analysis.extraPaths": [
-        "./layer",
-        "./layer/custom"
+        "${workspaceFolder}/src/layer",
+        "${workspaceFolder}/src/layer/custom",
+        "${workspaceFolder}/.aws-sam/build/LibsLayer"
     ]
 }

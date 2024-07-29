@@ -3,24 +3,5 @@
 		{
 			"path": "."
 		}
-	],
-	"settings": {},
-	"launch": {
-		"configurations": [
-			{
-				"type": "aws-sam",
-				"request": "direct-invoke",
-				"name": "ETL-GuiaTurBrasil:CidadesFunction",
-				"invokeTarget": {
-					"target": "template",
-					"templatePath": "${workspaceFolder}/template.yaml",
-					"logicalId": "CidadesFunction"
-				},
-				"lambda": {
-					"payload": {},
-					"environmentVariables": {}
-				}
-			}
-		]
-	}
+	]
 }
