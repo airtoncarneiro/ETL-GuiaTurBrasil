@@ -1,7 +1,4 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
 		{
@@ -11,15 +8,8 @@
 			"program": "${file}",
 			"console": "integratedTerminal",
 			"env": {
-				"PYTHONPATH": "${workspaceFolder}/src/lambda/cidades:${workspaceFolder}/src/layer:${workspaceFolder}/src/layer/custom:${workspaceFolder}/.aws-sam/build/LibsLayer"
+				"PYTHONPATH": "${workspaceFolder}/src/lambda/cidades:${workspaceFolder}/src/layer:${workspaceFolder}/src/layer/custom:${workspaceFolder}/.aws-sam/build/LibsLayer",
 			}
 		}
-	],
-	"settings": {
-		"python.analysis.extraPaths": [
-			"${workspaceFolder}/src/layer",
-			"${workspaceFolder}/src/layer/custom",
-			"${workspaceFolder}/.aws-sam/build/LibsLayer"
-		]
-	}
+	]
 }

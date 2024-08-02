@@ -5,6 +5,7 @@ tratamento de erros.
 
 from typing import Optional, Dict
 import requests
+from lxml import html
 
 
 def fetch_data_from_url(
@@ -41,7 +42,7 @@ def fetch_data_from_url(
             url, headers=headers, timeout=timeout
         )
         response.raise_for_status()
-        return response
+        return html.fromstring(response.content)
     except requests.exceptions.ReadTimeout as e:
         raise SystemExit("A solicitação atingiu o tempo limite") from e
     except requests.exceptions.RequestException as e:

@@ -1,5 +1,5 @@
 """
-Este módulo fornece uma implementação de um cliente SQS singleton usando boto3.
+Este módulo fornece uma implementação de um cliente SQS monostate usando boto3.
 
 A classe SQSClient permite enviar mensagens para uma fila SQS especificada.
 """
@@ -7,59 +7,29 @@ A classe SQSClient permite enviar mensagens para uma fila SQS especificada.
 import boto3
 
 
-class SQSClient:
+class SQSQueueClient:
     """
     Classe SQSClient para enviar mensagens para uma fila SQS.
 
-    Esta classe implementa o padrão Singleton para garantir que apenas uma instância do cliente SQS
-    seja criada. Utiliza o boto3 para interagir com o serviço SQS da AWS.
+    Esta classe implementa o padrão Monostate para garantir que todas as instâncias do cliente SQS
+    compartilhem o mesmo estado. Utiliza o boto3 para interagir com o serviço SQS da AWS.
     """
 
-    _instance = None
-
-    def __new__(cls, queue_url: str, region_name: str):
-        """
-        Cria uma nova instância da classe SQSClient se ainda não existir.
-
-        Args:
-            queue_url (str): A URL da fila SQS.
-            region_name (str): A região onde a fila SQS está localizada.
-
-        Returns:
-            SQSClient: A instância única da classe SQSClient.
-        """
-        if cls._instance is None:
-            cls._instance = super(SQSClient, cls).__new__(cls)
-            cls._instance.__init__(queue_url=queue_url, region_name=region_name)
-        return cls._instance
+    _shared_state = {}
 
     def __init__(self, queue_url: str, region_name: str) -> None:
         """
-        Inicializa o cliente SQS.
+        Inicializa o cliente SQS e compartilha o estado entre todas as instâncias.
 
         Args:
             queue_url (str): A URL da fila SQS.
             region_name (str): A região onde a fila SQS está localizada.
         """
-        if not hasattr(self, "sqs"):
+        self.__dict__ = self._shared_state
+        if not hasattr(self, "initialized"):
             self.sqs = boto3.client("sqs", region_name=region_name)
             self.queue_url = queue_url
-
-    @classmethod
-    def get_instance(cls, queue_url: str, region_name: str = "sua-regiao"):
-        """
-        Retorna a instância única da classe SQSClient.
-
-        Args:
-            queue_url (str): A URL da fila SQS.
-            region_name (str): A região onde a fila SQS está localizada. O padrão é "sua-regiao".
-
-        Returns:
-            SQSClient: A instância única da classe SQSClient.
-        """
-        if cls._instance is None:
-            cls._instance = cls(queue_url, region_name)
-        return cls._instance
+            self.initialized = True
 
     def send_to_sqs(self, message: str) -> dict:
         """
@@ -74,3 +44,13 @@ class SQSClient:
         response = self.sqs.send_message(QueueUrl=self.queue_url, MessageBody=message)
         print(f'Mensagem enviada para SQS: {response["MessageId"]}')
         return {"statusCode": 200, "body": "Mensagem enviada com sucesso!"}
+
+
+# # Exemplo de uso
+# if __name__ == "__main__":
+#     PARAM_QUEUE_URL = "sua-url-da-fila"
+#     PARAM_REGION_NAME = "sua-regiao"
+#     client1 = SQSClient(queue_url=PARAM_QUEUE_URL, region_name=PARAM_REGION_NAME)
+
+#     # Envia mensagem para SQS
+#     client1.send_to_sqs(message="Hello, SQS!")
