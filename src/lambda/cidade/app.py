@@ -1,36 +1,46 @@
-"""
-Este módulo fornece funcionalidades para buscar dados de cidades do site Guia do Turismo Brasil,
-enviar esses dados para uma fila SQS da AWS e lidar com erros de execução. Ele inclui funções
-para buscar dados da web, processar os dados e enviá-los para a fila SQS, além de um handler para
-execução em um ambiente Lambda da AWS.
-"""
-
+import boto3
+import os
 import json
-import logging
+import requests
 
-from aux import extract_cidades_from_page, send_to_sqs
-from my_fetch import fetch_data_from_url
-
-# from my_sqs import SQSClient
-
-logging.basicConfig(level=logging.INFO)
-
-URL = "https://www.guiadoturismobrasil.com/cidades"
+sns_client = boto3.client("sns")
 
 
 def lambda_handler(event, context):
-    """
-    Handler principal para execução em um ambiente Lambda da AWS.
-    """
-    logging.info("Received event: %s", json.dumps(event))
-    logging.info("Context: %s", context)
 
-    document = fetch_data_from_url(url=URL)
-    cidades_list = extract_cidades_from_page(document)
-    result_send_sqs = send_to_sqs(cidades_list=cidades_list)
+    for record in event["Records"]:
 
-    return result_send_sqs
+        message_body = json.loads(record["body"])
 
+        uf = message_body["uf"]
+        nome = message_body["nome"]
+        href = message_body["href"]
+        timestamp = message_body["timestamp"]
 
-if __name__ == "__main__":
-    lambda_handler({}, None)
+        base_url = "https://example.com"
+        full_url = f"{base_url}{href}"
+
+        try:
+
+            response = requests.get(full_url)
+            response.raise_for_status()
+
+            content = response.text
+
+            sns_message = {
+                "uf": uf,
+                "nome": nome,
+                "conteudo": content,
+                "timestamp": timestamp,
+            }
+
+            sns_response = sns_client.publish(
+                TopicArn=os.environ["CIDADE_TOPIC_ARN"], Message=json.dumps(sns_message)
+            )
+
+            print(f"Mensagem enviada para SNS: {sns_response}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Erro ao fazer a requisição para {full_url}: {e}")
+
+    return {"statusCode": 200, "body": "Processamento completo"}

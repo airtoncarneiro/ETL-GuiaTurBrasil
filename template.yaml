@@ -6,19 +6,90 @@ Description: |
 
 Globals:
   Function:
-    Runtime: python3.10
-    Handler: app.lambda_handler
-    Timeout: 20
-    MemorySize: 128
-    Layers:
-      - !Ref LibsLayer
-      - !Ref CustomLayer
     Environment:
       Variables:
         REGION_NAME: us-east-1
-        SQS_QUEUE_URL: !GetAtt CidadesQueue.QueueUrl
 
 Resources:
+  CidadesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-CidadesFunction
+      CodeUri: src/lambda/cidades
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action: sqs:SendMessage
+            Resource: !GetAtt CidadesQueue.Arn
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CidadesQueue.QueueName
+      Layers:
+        - !Ref LibsLayer
+        - !Ref CustomLayer
+      Environment:
+        Variables:
+          CIDADESQUEUE_QUEUE_NAME: !GetAtt CidadesQueue.QueueName
+          CIDADESQUEUE_QUEUE_ARN: !GetAtt CidadesQueue.Arn
+          CIDADESQUEUE_QUEUE_URL: !Ref CidadesQueue
+      Runtime: python3.10
+      Handler: app.lambda_handler
+      MemorySize: 128
+      Timeout: 20
+
+  CidadeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-CidadeFunction
+      CodeUri: src/lambda/cidade
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action: sns:Publish
+            Resource: !Ref CidadeTopic
+      Events:
+        CidadesQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt CidadesQueue.Arn
+            BatchSize: 1
+      Environment:
+        Variables:
+          CIDADE_TOPIC_ARN: !Ref CidadeTopic
+      Runtime: python3.10
+      Handler: app.lambda_handler
+      MemorySize: 128
+      Timeout: 20
+
+  # HotelLambdaFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: !Sub ${AWS::StackName}-HotelLambda
+  #     CodeUri: src/lambda/hotel
+  #     Handler: app.lambda_handler
+  #     Runtime: python3.10
+  #     Events:
+  #       HotelQueueEvent:
+  #         Type: SQS
+  #         Properties:
+  #           Queue: !GetAtt HotelQueue.Arn
+  #     MemorySize: 128
+  #     Timeout: 20
+
+  # RestauranteLambdaFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: !Sub ${AWS::StackName}-RestauranteLambda
+  #     CodeUri: src/lambda/restaurante
+  #     Handler: app.lambda_handler
+  #     Runtime: python3.10
+  #     Events:
+  #       RestauranteQueueEvent:
+  #         Type: SQS
+  #         Properties:
+  #           Queue: !GetAtt RestauranteQueue.Arn
+  #     MemorySize: 128
+  #     Timeout: 20
+
   LibsLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -42,35 +113,45 @@ Resources:
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: python3.10
-
-  CidadesFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-CidadesFunction
-      CodeUri: src/lambda/cidades
-      Policies:
-        - Statement:
-            Effect: Allow
-            Action: sqs:SendMessage
-            Resource: !GetAtt CidadesQueue.Arn
-      Layers:
-        - !Ref LibsLayer
-
-  CidadeFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-CidadeFunction
-      CodeUri: src/lambda/cidade
-      Events:
-        CidadesQueue:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt CidadesQueue.Arn
-            BatchSize: 1
   CidadesQueue:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: CidadesQueue
+
+  CidadeTopic:
+    Type: AWS::SNS::Topic
+
+  # HotelSubscription:
+  #   Type: AWS::SNS::Subscription
+  #   Properties:
+  #     TopicArn: !Ref CidadeTopic
+  #     Endpoint: !GetAtt HotelQueue.Arn
+  #     Protocol: sqs
+  #     RawMessageDelivery: true
+  #     FilterPolicy:
+  #       process-type:
+  #         - hotel
+
+  # HotelQueue:
+  #   Type: AWS::SQS::Queue
+  #   Properties:
+  #     MessageRetentionPeriod: 345600
+
+  # RestauranteQueue:
+  #   Type: AWS::SQS::Queue
+  #   Properties:
+  #     MessageRetentionPeriod: 345600
+
+  # RestauranteSubscription:
+  #   Type: AWS::SNS::Subscription
+  #   Properties:
+  #     TopicArn: !Ref CidadeTopic
+  #     Endpoint: !GetAtt RestauranteQueue.Arn
+  #     Protocol: sqs
+  #     RawMessageDelivery: true
+  #     FilterPolicy:
+  #       process-type:
+  #         - restaurante
 
 Outputs:
   CidadesQueueUrl:

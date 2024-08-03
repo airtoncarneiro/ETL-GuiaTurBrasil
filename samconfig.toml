@@ -17,7 +17,7 @@ capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 s3_prefix = "guia-tur-bra"
 image_repositories = []
-s3_bucket="sam-app-guiaturbra-1972"
+#s3_bucket="sam-app-guiaturbra-1972"
 region = "us-east-1"
 resolve_s3 = true
 
