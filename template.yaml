@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: |
   guia-tur-bra
@@ -28,9 +28,9 @@ Resources:
         - !Ref CustomLayer
       Environment:
         Variables:
-          CIDADESQUEUE_QUEUE_NAME: !GetAtt CidadesQueue.QueueName
-          CIDADESQUEUE_QUEUE_ARN: !GetAtt CidadesQueue.Arn
-          CIDADESQUEUE_QUEUE_URL: !Ref CidadesQueue
+          CIDADES_QUEUE_NAME: !GetAtt CidadesQueue.QueueName
+          CIDADES_QUEUE_ARN: !GetAtt CidadesQueue.Arn
+          CIDADES_QUEUE_URL: !Ref CidadesQueue
       Runtime: python3.10
       Handler: app.lambda_handler
       MemorySize: 128
@@ -113,14 +113,14 @@ Resources:
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: python3.10
+
   CidadesQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: CidadesQueue
+      QueueName: !Sub ${AWS::StackName}-CidadesQueue
 
   CidadeTopic:
     Type: AWS::SNS::Topic
-
   # HotelSubscription:
   #   Type: AWS::SNS::Subscription
   #   Properties:
@@ -155,6 +155,7 @@ Resources:
 
 Outputs:
   CidadesQueueUrl:
+    Description: URL da fila CidadesQueue
     Value: !Ref CidadesQueue
     Export:
-      Name: CidadesQueueUrl
+      Name: !Sub ${AWS::StackName}-CidadesQueueUrl

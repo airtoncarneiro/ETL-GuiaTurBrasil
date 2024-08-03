@@ -42,13 +42,13 @@ def send_to_sqs(cidades_list):
     Raises:
         ValueError: Se as variáveis de ambiente AWS_REGION ou SQS_QUEUE_CIDADES_URL não estiverem definidas.
     """
-    region_name = os.getenv(key="AWS_REGION", default="")
-    queue_url = os.getenv(key="SQS_QUEUE_CIDADES_URL", default="")
+    region_name: str = os.getenv(key="REGION_NAME", default="")
+    cidades_queue_url: str = os.getenv(key="CIDADES_QUEUE_URL", default="")
 
-    if "" in {region_name, queue_url}:
+    if "" in {region_name, cidades_queue_url}:
         raise ValueError("REGION_NAME and SQS_QUEUE_CIDADES_URL must be set")
 
-    sqs_client = SQSQueueClient(queue_url=queue_url, region_name=region_name)
+    sqs_client = SQSQueueClient(queue_url=cidades_queue_url, region_name=region_name)
 
     # sqs_client = SQSClient.get_instance(queue_url=queue_url, region_name=region_name)
     for cidade_data in cidades_list:
