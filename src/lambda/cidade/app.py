@@ -1,7 +1,9 @@
 import json
 import logging
 
-from aux import extract_cidades_from_page, send_to_sqs
+# from aux import get_items_from_page
+from aux import extract_data_from_document
+
 from my_fetch import fetch_data_from_url
 
 logging.basicConfig(level=logging.INFO)
@@ -28,10 +30,10 @@ def lambda_handler(event, context):
 
         document = fetch_data_from_url(url=url)
 
-        # cidades_list = extract_cidades_from_page(document)
+        items = extract_data_from_document(document=document)
         # result_send_sqs = send_to_sqs(cidades_list=cidades_list)
 
-        return document
+        return items
 
 
 if __name__ == "__main__":

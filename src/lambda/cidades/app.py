@@ -8,6 +8,7 @@ execução em um ambiente Lambda da AWS.
 import json
 import logging
 
+# from src.lambda.cidades._aux import extract_cidades_from_page, send_to_sqs
 from aux import extract_cidades_from_page, send_to_sqs
 from my_fetch import fetch_data_from_url
 

@@ -1,7 +1,8 @@
 # requests
 # pydantic
 # lxml
-# cssselect
+boto3
 debugpy
 requests-html
 lxml_html_clean
+# cssselect
