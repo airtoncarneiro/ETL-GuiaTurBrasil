@@ -11,8 +11,6 @@ import logging
 from aux import extract_cidades_from_page, send_to_sqs
 from my_fetch import fetch_data_from_url
 
-# from my_sqs import SQSClient
-
 logging.basicConfig(level=logging.INFO)
 
 URL = "https://www.guiadoturismobrasil.com/cidades"

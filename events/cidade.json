@@ -1,6 +1,20 @@
 {
-    "uf": "AC",
-    "nome": "Xapuri",
-    "href": "https://www.guiadoturismobrasil.com/cidade/AC/222/xapuri",
-    "timestamp": "2024-07-04T18:20:54.919653"
+    "Records": [
+        {
+            "messageId": "12345678-1234-5678-1234-567812345678",
+            "receiptHandle": "AQEB1234567890Example",
+            "body": "{\"uf\": \"CE\", \"nome\": \"Fortaleza\", \"href\": \"/cidade/CE/980/fortaleza\", \"timestamp\": \"2024-08-03T15:42:00.716641\"}",
+            "attributes": {
+                "ApproximateReceiveCount": "1",
+                "SentTimestamp": "1609459200000",
+                "SenderId": "123456789012",
+                "ApproximateFirstReceiveTimestamp": "1609459200001"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "fda4b3f0b2a7d5c29f473c68ae9bc41f",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:CidadesQueue",
+            "awsRegion": "us-east-1"
+        }
+    ]
 }

@@ -9,7 +9,10 @@
 			"console": "integratedTerminal",
 			"env": {
 				"PYTHONPATH": "${workspaceFolder}/src/lambda/cidades:${workspaceFolder}/src/layer:${workspaceFolder}/src/layer/custom:${workspaceFolder}/.aws-sam/build/LibsLayer",
-			}
+			},
+			"args": [
+				"${workspaceFolder}/events/cidade.json"
+			]
 		}
 	]
 }

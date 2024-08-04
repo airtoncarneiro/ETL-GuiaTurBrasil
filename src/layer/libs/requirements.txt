@@ -1,4 +1,7 @@
-requests
-pydantic
-lxml
+# requests
+# pydantic
+# lxml
+# cssselect
 debugpy
+requests-html
+lxml_html_clean

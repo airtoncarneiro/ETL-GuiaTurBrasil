@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
   guia-tur-bra
@@ -46,12 +46,12 @@ Resources:
             Effect: Allow
             Action: sns:Publish
             Resource: !Ref CidadeTopic
-      Events:
-        CidadesQueue:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt CidadesQueue.Arn
-            BatchSize: 1
+      # Events:
+      #   CidadesQueue:
+      #     Type: SQS
+      #     Properties:
+      #       Queue: !GetAtt CidadesQueue.Arn
+      #       BatchSize: 1
       Environment:
         Variables:
           CIDADE_TOPIC_ARN: !Ref CidadeTopic
@@ -118,6 +118,8 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: !Sub ${AWS::StackName}-CidadesQueue
+      MessageRetentionPeriod: 172800
+      VisibilityTimeout: 60
 
   CidadeTopic:
     Type: AWS::SNS::Topic

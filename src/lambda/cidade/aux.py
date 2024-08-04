@@ -14,7 +14,8 @@ def extract_cidades_from_page(document):
     """
     Busca e processa dados de cidades do site Guia do Turismo Brasil.
     """
-    cidades_link = document.xpath("//a[contains(@class, 'link-cidades')]")
+    # cidades_link = document.xpath("//a[contains(@class, 'link-cidades')]")
+    cidades_link = document.cssselect("a.link-cidades")
     cidades_list = []
 
     for cidade in cidades_link:
