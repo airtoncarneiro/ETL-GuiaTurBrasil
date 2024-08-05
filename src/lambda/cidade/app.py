@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Dict, List
 
 # from aux import get_items_from_page
 from aux import extract_data_from_document
@@ -22,18 +23,24 @@ def lambda_handler(event, context):
 
     for record in event["Records"]:
         body = json.loads(record["body"])
-        # print(f"Nome: {body['nome']}")
-        # print(f"Href: {body['href']}")
-        # print(f"Timestamp: {body['timestamp']}")
-
-        url = f"{URL_BASE}{body['href']}"
+        url: str = f"{URL_BASE}{body['href']}"
 
         document = fetch_data_from_url(url=url)
 
-        items = extract_data_from_document(document=document)
+        items_from_page: Dict[str, str | List[str]] = extract_data_from_document(
+            document=document
+        )
+
+        result = {
+            "uf": body["uf"],
+            "nome": body["nome"],
+            "url": url,
+            "data": items_from_page,
+        }
+
         # result_send_sqs = send_to_sqs(cidades_list=cidades_list)
 
-        return items
+        return result
 
 
 if __name__ == "__main__":

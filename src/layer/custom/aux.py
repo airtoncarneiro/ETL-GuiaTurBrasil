@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 import logging
 import os
-from typing import Dict, List
+from typing import Dict, List, Callable, TypedDict
 from my_sqs import SQSQueueClient
 
 
@@ -34,32 +34,72 @@ def extract_cidades_from_page(document):
     return cidades_list
 
 
-def extract_data_from_document(document) -> Dict[str, List[str]]:
-    # Dicionário de seletores CSS para diferentes tipos de dados
-    css_selectors: dict[str, str] = {
-        "subtitles": ".subtitulo",
-        "descriptions": ".subtitulo + br + p",
-        "image_links": "a.fancybox",
-        "accommodations": "select.form-control > option[value^='/hospedagem']",
-        "restaurants": "select.form-control > option[value^='/gastronomia']",
+class SelectorInfo(TypedDict):
+    selector: str
+    extract: Callable[[List], List[str]]
+
+
+def extract_data_from_document(document) -> Dict[str, str | List[str]]:
+    # Define funções de extração para cada tipo de dado
+    def extract_text(elements) -> List[str]:
+        # return [element.text for element in elements]
+        # Lista para armazenar os resultados finais
+        elements = [element.text for element in elements]
+        # Lista para armazenar os resultados finais
+        result = []
+
+        # Iterar sobre cada elemento para processar seu texto
+        for element in elements:
+            start = 0
+            text_length = len(element)
+
+            while start < text_length:
+                # Define o fim do slice inicialmente para 80 caracteres após o início
+                end = min(start + 80, text_length)
+                # Se a última posição não for um espaço e não é o final do texto
+                if end < text_length and element[end] != " ":
+                    # Mover o end para trás até encontrar um espaço
+                    while end > start and element[end] != " ":
+                        end -= 1
+
+                # Se não encontrou espaço (palavra maior que 80), fatiar mesmo assim
+                if end == start:
+                    end = start + 80
+
+                # Adiciona o segmento ao resultado
+                result.append(element[start:end])
+                # Move o início para o próximo segmento
+                start = end + 1
+
+        return result
+
+    def extract_href(elements) -> List[str]:
+        return [element.attrs.get("href", "") for element in elements]
+
+    def extract_value(elements) -> List[str]:
+        return [element.attrs.get("value", "") for element in elements]
+
+    # Dicionário de seletores CSS e suas funções de extração associadas
+    css_selectors: Dict[str, SelectorInfo] = {
+        "subtitulo": {"selector": ".subtitulo", "extract": extract_text},
+        "descricao": {"selector": ".subtitulo + br + p", "extract": extract_text},
+        "imagens": {"selector": "a.fancybox", "extract": extract_href},
+        "acomodacoes": {
+            "selector": "select.form-control > option[value^='/hospedagem']",
+            "extract": extract_value,
+        },
+        "restaurantes": {
+            "selector": "select.form-control > option[value^='/gastronomia']",
+            "extract": extract_value,
+        },
     }
 
     extracted_data: Dict[str, List[str]] = {}
-    data_list: List[str]
 
-    for data_type, css_selector in css_selectors.items():
-        elements = css_find(document=document, css=css_selector)
-
-        if data_type in ["subtitles", "descriptions"]:
-            data_list = [element.text for element in elements]
-        elif data_type == "image_links":
-            data_list = [element.attrs["href"] for element in elements]
-        elif data_type in ["accommodations", "restaurants"]:
-            data_list = [element.attrs["value"] for element in elements]
-        else:
-            data_list = []
-
-        extracted_data[data_type] = data_list
+    for data_type, info in css_selectors.items():
+        elements = css_find(document=document, css=info["selector"])
+        extract_function = info["extract"]
+        extracted_data[data_type] = extract_function(elements)
 
     return extracted_data
 
