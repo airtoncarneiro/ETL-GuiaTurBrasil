@@ -9,6 +9,8 @@ Globals:
     Environment:
       Variables:
         REGION_NAME: us-east-1
+        BUCKET_NAME: etl-guia-tur-1972
+        URL_BASE: https://www.guiadoturismobrasil.com
 
 Resources:
   CidadesFunction:
@@ -23,6 +25,14 @@ Resources:
             Resource: !GetAtt CidadesQueue.Arn
         - SQSSendMessagePolicy:
             QueueName: !GetAtt CidadesQueue.QueueName
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+              Resource:
+                - !Sub arn:${AWS::Partition}:s3:::${S3Bucket}
+                - !Sub arn:${AWS::Partition}:s3:::${S3Bucket}/*
       Layers:
         - !Ref LibsLayer
         - !Ref CustomLayer
@@ -31,6 +41,8 @@ Resources:
           CIDADES_QUEUE_NAME: !GetAtt CidadesQueue.QueueName
           CIDADES_QUEUE_ARN: !GetAtt CidadesQueue.Arn
           CIDADES_QUEUE_URL: !Ref CidadesQueue
+          S3BUCKET_BUCKET_NAME: !Ref S3Bucket
+          S3BUCKET_BUCKET_ARN: !GetAtt S3Bucket.Arn
       Runtime: python3.10
       Handler: app.lambda_handler
       MemorySize: 128
@@ -155,9 +167,19 @@ Resources:
   #       process-type:
   #         - restaurante
 
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: etl-guia-tur-1972
+
 Outputs:
   CidadesQueueUrl:
     Description: URL da fila CidadesQueue
     Value: !Ref CidadesQueue
     Export:
       Name: !Sub ${AWS::StackName}-CidadesQueueUrl
+  CidadeTopicArn:
+    Description: ARN do SNS Topic CidadeTopic
+    Value: !Ref CidadeTopic
+    Export:
+      Name: !Sub ${AWS::StackName}-CidadeTopicArn

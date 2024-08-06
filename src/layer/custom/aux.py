@@ -10,6 +10,10 @@ from typing import Dict, List, Callable, TypedDict
 from my_sqs import SQSQueueClient
 
 
+def get_timestamp() -> str:
+    return datetime.now().isoformat()
+
+
 def css_find(document, css):
     return document.find(css)
 
@@ -39,7 +43,7 @@ class SelectorInfo(TypedDict):
     extract: Callable[[List], List[str]]
 
 
-def extract_data_from_document(document) -> Dict[str, str | List[str]]:
+def extract_description_from_document(document):
     # Define funções de extração para cada tipo de dado
     def extract_text(elements) -> List[str]:
         # return [element.text for element in elements]
@@ -76,22 +80,23 @@ def extract_data_from_document(document) -> Dict[str, str | List[str]]:
     def extract_href(elements) -> List[str]:
         return [element.attrs.get("href", "") for element in elements]
 
-    def extract_value(elements) -> List[str]:
-        return [element.attrs.get("value", "") for element in elements]
+    # def extract_value(elements) -> List[str]:
+    #     return [element.attrs.get("value", "") for element in elements]
 
     # Dicionário de seletores CSS e suas funções de extração associadas
     css_selectors: Dict[str, SelectorInfo] = {
         "subtitulo": {"selector": ".subtitulo", "extract": extract_text},
         "descricao": {"selector": ".subtitulo + br + p", "extract": extract_text},
-        "imagens": {"selector": "a.fancybox", "extract": extract_href},
-        "acomodacoes": {
-            "selector": "select.form-control > option[value^='/hospedagem']",
-            "extract": extract_value,
-        },
-        "restaurantes": {
-            "selector": "select.form-control > option[value^='/gastronomia']",
-            "extract": extract_value,
-        },
+        "imagem": {"selector": "a.fancybox", "extract": extract_href},
+        # TODO: remover
+        # "hospedagem": {
+        #     "selector": "select.form-control > option[value^='/hospedagem']",
+        #     "extract": extract_value,
+        # },
+        # "gastronomia": {
+        #     "selector": "select.form-control > option[value^='/gastronomia']",
+        #     "extract": extract_value,
+        # },
     }
 
     extracted_data: Dict[str, List[str]] = {}
@@ -117,17 +122,14 @@ def send_to_sqs(cidades_list):
     Raises:
         ValueError: Se as variáveis de ambiente AWS_REGION ou SQS_QUEUE_CIDADES_URL não estiverem definidas.
     """
-    region_name: str = os.getenv(key="REGION_NAME", default="")
-    cidades_queue_url: str = os.getenv(key="CIDADES_QUEUE_URL", default="")
-
-    if "" in {region_name, cidades_queue_url}:
-        raise ValueError("REGION_NAME and SQS_QUEUE_CIDADES_URL must be set")
+    region_name: str = os.environ["REGION_NAME"]
+    cidades_queue_url: str = os.environ["CIDADES_QUEUE_URL"]
 
     sqs_client = SQSQueueClient(queue_url=cidades_queue_url, region_name=region_name)
 
     # sqs_client = SQSClient.get_instance(queue_url=queue_url, region_name=region_name)
     for cidade_data in cidades_list:
-        cidade_data["timestamp"] = datetime.now().isoformat()
+        cidade_data["timestamp"] = get_timestamp()
         message_body = json.dumps(cidade_data)
         logging.info("Enviando mensagem para SQS: %s", message_body)
         sqs_client.send_to_sqs(message=message_body)

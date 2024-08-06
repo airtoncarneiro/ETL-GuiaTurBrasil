@@ -1,0 +1,65 @@
+{
+    "subtitulo": [
+        "A Capital Fortaleza foi eleita entre os dez melhores Destinos de Viagem pela",
+        "beleza natural de suas praias"
+    ],
+    "descricao": [
+        "Fortaleza \\u00e9 a quinta Capital do pa\\u00eds em termos de popula\\u00e7\\u00e3o. Os seus moradores",
+        "formam um conjunto de pessoas acolhedoras, trabalhadoras e bem-humoradas. A",
+        "beleza natural das praias e, a sua proximidade com o clima frio das serras",
+        "pr\\u00f3ximas \\u00e0 capital cearense, como Maranguape, Baturit\\u00e9 e Guaramiranga, est\\u00e3o",
+        "entre os destaques que atraem grandes grupos de turistas para a cidade. Nas",
+        "praias, a \\u00e1gua \\u00e9 morna quase o ano inteiro. Sobre a gastronomia local, podemos",
+        "citar v\\u00e1rias comidas t\\u00edpicas do Cear\\u00e1: Peixada, caranguejo, tradicional bai\\u00e3o de",
+        "dois, carneiro cozido, a carne de sol, a panelada, rabada entre outros. O",
+        "talento de nossos humoristas, revelados nacionalmente, tamb\\u00e9m movimenta a cidade",
+        "quase todos os dias da semana. Shows acontecem em barracas de praias,",
+        "restaurantes e teatros da cidade. De segunda a segunda, \\u00e9 poss\\u00edvel dan\\u00e7ar forr\\u00f3",
+        "em Fortaleza. E quem n\\u00e3o sabe n\\u00e3o precisa se preocupar, tem sempre um(a)",
+        "parceiro(a) gentil pra ensinar os primeiros passos. Fortaleza possui um com\\u00e9rcio",
+        "muito atuante e diversificado. Sua produ\\u00e7\\u00e3o industrial est\\u00e1 basicamente centrada",
+        "nos ramos de vestu\\u00e1rio e cal\\u00e7ada, artefatos de tecidos, couros e peles,",
+        "alimentos, extra\\u00e7\\u00e3o e beneficiamento de minerais n\\u00e3o met\\u00e1licos e produtos",
+        "t\\u00eaxteis. Fortaleza \\u00e9 um dos destinos tur\\u00edsticos mais procurados do Brasil, tendo",
+        "alcan\\u00e7ado a marca de destino mais procurado do pa\\u00eds pela ABAV. As principais",
+        "atra\\u00e7\\u00f5es est\\u00e3o na Regi\\u00e3o Metropolitana: o Centro Drag\\u00e3o do Mar de Arte e",
+        "Cultura, a Av. Beira Mar (com sua feira de artesanato), a Praia de Iracema, a",
+        "Ponte dos Ingleses, e\\u00a0a Praia do Futuro com suas \"barracas\" de praia."
+    ],
+    "imagem": [
+        "https://www.guiadoturismobrasil.com/up/img/1434216858.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1434216864.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1434216869.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1434216876.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1434216882.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1437251841.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1437251854.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1437251861.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1437251877.jpg",
+        "https://www.guiadoturismobrasil.com/up/img/1437252356.jpg"
+    ],
+    "hospedagem": [
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/blue-tree-premium-morumbi/1292",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/blue-tree-premium-paulista-hotel/15002",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/blue-tree-towers-analia-franco-tatuape/35217",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/blue-tree-towers-faria-lima/1291",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/excelsior-sao-paulo-hotel/41764",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/gran-villagio-hotel-sp-by-castelo-itaipava/1302",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/hotel-mega-polo/3711",
+        "/hospedagem/2/flat/3/SP/sao-paulo/193/london-class-suites/302",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/maraba-design-hotel/3843",
+        "/hospedagem/2/hotel/4/SP/sao-paulo/193/nikkey-palace-hotel/3876"
+    ],
+    "gastronomia": [
+        "/gastronomia/3/restaurante/8/SP/sao-paulo/193/a-casa-do-raimundo-restaurante/41865",
+        "/gastronomia/3/restaurante/8/SP/sao-paulo/193/baiao-cozinha-nordestina/41204",
+        "/gastronomia/3/restaurante/8/SP/sao-paulo/193/chuletao-grill-e-pizza/41838",
+        "/gastronomia/3/restaurante/8/SP/sao-paulo/193/le-bou-food-art-bar/41689",
+        "/gastronomia/3/restaurante/8/SP/sao-paulo/193/restaurante-terraco-italia/10016",
+        "/gastronomia/3/pub/13/SP/sao-paulo/193/world-cafe-bar/41864",
+        "/gastronomia/3/churrascaria/16/SP/sao-paulo/193/esquina-grill-do-fuad/41582",
+        "/gastronomia/3/restaurante/8/SP/sao-paulo/193/pizzaria-restaurante-copan/41592",
+        "/gastronomia/3/cervejaria/28/SP/sao-paulo/193/les-3-brasseurs-brasil-cervejaria/41053",
+        "/gastronomia/3/restaurante/8/SP/sao-paulo/193/7-mares-restaurante/18826"
+    ]
+}
